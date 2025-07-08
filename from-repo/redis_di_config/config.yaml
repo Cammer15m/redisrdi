@@ -2,5 +2,8 @@ connections:
   # Redis target DB connection details
   target:
     type: redis
-    host: redis
-    port: 12000
+    host: 3.148.243.197
+    port: 13000
+    username: default
+    password: redislabs
+    ssl: false

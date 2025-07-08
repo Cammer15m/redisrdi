@@ -3,11 +3,13 @@ connections:
   # This section is for configuring the Redis database to which Redis Connect will write the processed data
   target:
     # Host of the Redis database to which Redis Connect will write the processed data
-    host: re-n1
+    host: 3.148.243.197
     # Port for the Redis database to which Redis Connect will write the processed data
-    port: 12000
-    # In case of secured password
-    #password: ${secrets:target-password}
+    port: 13000
+    # Username for the Redis database
+    username: default
+    # Password for the Redis database
+    password: redislabs
 
     # TLS
     # Private key file to authenticate with

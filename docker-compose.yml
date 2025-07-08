@@ -168,6 +168,40 @@ services:
       default:
         ipv4_address: 172.16.22.17
 
+  # RDI Server Container
+  rdi-server:
+    image: rdi-server
+    hostname: rdi-server
+    container_name: rdi-server
+    ports:
+      - '8080:8080'  # RDI API port
+      - '9443:9443'  # RDI HTTPS port
+      - '9090:9090'  # RDI Metrics port
+    build:
+      context: .
+      dockerfile: rdi-server.dockerfile
+    volumes:
+      - './rdi-config/:/opt/rdi/config/'
+      - './from-repo/redis_di_config/:/opt/rdi/pipeline-config/'
+      - './logs/rdi/:/opt/rdi/logs/'
+    env_file:
+      - .env.rdi
+    environment:
+      - RDI_REDIS_HOST=3.148.243.197
+      - RDI_REDIS_PORT=13000
+      - RDI_REDIS_USERNAME=default
+      - RDI_REDIS_PASSWORD=redislabs
+    networks:
+      default:
+        ipv4_address: 172.16.22.17
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
   loadgen:
     image: loadgen
     hostname: loadgen
@@ -179,7 +213,9 @@ services:
       dockerfile: rdi.dockerfile
     volumes:
       - './from-repo/scripts/:/scripts/'
-      - './from-repo/ingest_config/:/home/labuser/ingest_config/'  
+      - './from-repo/ingest_config/:/home/labuser/ingest_config/'
+    depends_on:
+      - rdi-server
     networks:
       default:
         ipv4_address: 172.16.22.18
